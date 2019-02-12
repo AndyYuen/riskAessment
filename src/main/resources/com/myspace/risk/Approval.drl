@@ -1,0 +1,127 @@
+package com.myspace.risk;
+
+// Debug if Applicant is not in working memory
+rule "Print in working memory final-assessment" 
+    salience -100
+	agenda-group "final-assessment"
+	dialect "mvel"
+
+    when
+        $app: Applicant()
+    then
+        System.out.println("Rule fired: " + drools.getRule().getName());
+        System.out.println("Debugging: Applicant: " + $app);
+end
+
+// Debug if Applicant is not in working memory
+rule "Print in working memory credit score" 
+    salience -100
+	agenda-group "creditScore"
+	dialect "mvel"
+
+    when
+        $app: Applicant()
+    then
+        System.out.println("Rule fired: " + drools.getRule().getName());
+        System.out.println("Debugging: Applicant: " + $app);
+end
+
+// Debug if Applicant is not in working memory
+rule "Print in working memory demographic-assessment" 
+    salience -100
+	agenda-group "demographic-assessment"
+	dialect "mvel"
+
+    when
+        $app: Applicant()
+    then
+        System.out.println("Rule fired: " + drools.getRule().getName());
+        System.out.println("Debugging: Applicant: " + $app);
+end
+
+// Debug if Applicant is not in working memory
+rule "Print in working memory creditCardDemographic-assessment" 
+    salience -100
+	agenda-group "creditCardDemographic-assessment"
+	dialect "mvel"
+
+    when
+        $app: Applicant()
+    then
+        System.out.println("Rule fired: " + drools.getRule().getName());
+        System.out.println("Debugging: Applicant: " + $app);
+end
+
+// Debug if Applicant is not in working memory
+rule "Print not in working memory" 
+    salience 100
+	agenda-group "approval-decision"
+	dialect "mvel"
+
+    when
+        not Applicant()
+    then
+        System.out.println("Rule fired: " + drools.getRule().getName());
+        System.out.println("Debugging: Applicant is not in working memory.");
+end
+
+// Debug if Applicant is not in working memory
+rule "Print in working memory" 
+    salience 100
+	agenda-group "approval-decision"
+	dialect "mvel"
+
+    when
+        $app: Applicant()
+    then
+        System.out.println("Rule fired: " + drools.getRule().getName());
+        System.out.println("Debugging: Applicant: " + $app);
+end
+
+// Reject due to Demographic Assessment "Unsuitable"
+rule "Demographic Assessment Failed"
+	agenda-group "approval-decision"
+	dialect "mvel"
+	when
+		$app : Applicant( demographicAssessment == "Unsuitable" )
+	then
+	    System.out.println("Rule fired: " + drools.getRule().getName());
+		$app.setApproved( false );
+		$app.setExplanation( "Application rejected because Demographic Assessment says Unsuitable");
+end
+
+// Reject due to Credit Card Demographic Assessment "Unsuitable"
+rule "Credit Card Demographic Assessment Failed"
+	agenda-group "approval-decision"
+	dialect "mvel"
+	when
+		$app : Applicant( creditCardDemographicAssessment == "Unsuitable" )
+	then
+	    System.out.println("Rule fired: " + drools.getRule().getName());
+		$app.setApproved( false );
+		$app.setExplanation( "Application rejected because Credit Card Demographic Assessment says Unsuitable" );
+end
+
+// Reject due to Low Credit Score"
+rule "Credit Score Rejection"
+	agenda-group "approval-decision"
+	dialect "mvel"
+	when
+		$app : Applicant( demographicAssessment == "Suitable", creditCardDemographicAssessment == "Suitable", totalCreditScore < 500 )
+	then
+	    System.out.println("Rule fired: " + drools.getRule().getName());
+		$app.setApproved( false );
+		$app.setExplanation ( "Application rejected because Credit score is below 500" );
+end
+
+// Approve due to high enough Credit Score"
+rule "Credit Score Approval"
+	agenda-group "approval-decision"
+	dialect "mvel"
+	when
+		$app : Applicant( demographicAssessment == "Suitable", creditCardDemographicAssessment == "Suitable", totalCreditScore >= 500 )
+	then
+	    System.out.println("Rule fired: " + drools.getRule().getName());
+		$app.setApproved( true );
+		$app.setExplanation ( "Application approved Credit score is above or equal 500 and passed all Demographic assessments");
+end
