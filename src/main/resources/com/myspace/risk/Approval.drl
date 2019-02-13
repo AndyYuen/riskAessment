@@ -54,7 +54,7 @@ end
 
 // Debug if Applicant is not in working memory
 rule "Print not in working memory" 
-    salience 100
+    salience -100
 	agenda-group "approval-decision"
 	dialect "mvel"
 
@@ -65,8 +65,8 @@ rule "Print not in working memory"
         System.out.println("Debugging: Applicant is not in working memory.");
 end
 
-// Debug if Applicant is not in working memory
-rule "Print in working memory" 
+// Debug Print in working memory before evaluation
+rule "Print in working memory before evaluation" 
     salience 100
 	agenda-group "approval-decision"
 	dialect "mvel"
@@ -78,7 +78,21 @@ rule "Print in working memory"
         System.out.println("Debugging: Applicant: " + $app);
 end
 
-// Reject due to Demographic Assessment "Unsuitable"
+// Debug Print in working memory after evaluation
+rule "Print in working memory after evaluation" 
+    salience -100
+	agenda-group "approval-decision"
+	dialect "mvel"
+
+    when
+        $app: Applicant()
+    then
+        System.out.println("Rule fired: " + drools.getRule().getName());
+        System.out.println("Debugging: Applicant: " + $app);
+
+end
+
+// Reject due to Demographic Assessment Unsuitable
 rule "Demographic Assessment Failed"
 	agenda-group "approval-decision"
 	dialect "mvel"
@@ -90,7 +104,7 @@ rule "Demographic Assessment Failed"
 		$app.setExplanation( "Application rejected because Demographic Assessment says Unsuitable");
 end
 
-// Reject due to Credit Card Demographic Assessment "Unsuitable"
+// Reject due to Credit Card Demographic Assessment Unsuitable
 rule "Credit Card Demographic Assessment Failed"
 	agenda-group "approval-decision"
 	dialect "mvel"
@@ -124,4 +138,17 @@ rule "Credit Score Approval"
 	    System.out.println("Rule fired: " + drools.getRule().getName());
 		$app.setApproved( true );
 		$app.setExplanation ( "Application approved Credit score is above or equal 500 and passed all Demographic assessments");
+end
+
+// refresh Application
+rule "refresh"
+	agenda-group "approval-decision"
+	salience 200
+	no-loop
+	dialect "mvel"
+	when
+		$app : Applicant()
+	then
+	    System.out.println("Rule fired: " + drools.getRule().getName());
+        update($app)
 end
