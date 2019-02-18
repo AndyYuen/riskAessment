@@ -1,0 +1,14 @@
+package com.myspace.risk;
+
+import java.lang.Number;
+
+rule "underAge"
+	agenda-group "dsl-demographic-assessment"
+	dialect "mvel"
+	when
+		There is an Applicant x with
+		- age younger than 18
+	then
+		Log this rule which has been fired
+		The applicant x is "Unsuitable"
+end
