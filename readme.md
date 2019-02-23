@@ -21,8 +21,45 @@ The Approval DRL and the final-assessment decision table implement the same rule
 Similarly, the DemographicAssessment decision table and the 3 Guided Rules implement the smae logic. Again, you can switch to use one or the other by changing the rueflow-group in the "Make Demographic Assessment" task in the rule flow diagram.
 
 I've created a 30+ minutes video on youtube to go with this repository:
+[![Accompanying Video](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=JVVDLGt2jF8&feature=youtu.be)
 
-https://youtu.be/JVVDLGt2jF8
+The json file used in the video to interact with the deployed rules application is shown below:
+{
+ "lookup": "myStatelessSession",
+ "commands": [{
+   "insert": {
+                                "out-identifier": "in",
+    "object": {
+     "com.myspace.risk.Applicant": {
+      "age": 2,
+      "existingCustomer": true,
+      "annualIncome": 200000,
+      "mortgageAmount": 500000,
+      "accountBalance": 100000,
+      "bankruptcy": false,
+      "numberOfDefaultPaymentsLast12Months": 5,
+      "yearsWithBank": 10,
+      "totalCreditScore": 0
+
+     }
+}
+  }
+ },
+ {
+  "start-process": {
+   "processId": "risk.risk-assessment"
+
+  }
+ },
+ {
+  "fire-all-rules": ""
+ },
+ {
+  "get-objects": {
+   "out-identifier": "objects"
+  }
+ }]
+}
 
 No external tools are required to develop the application nor to deploy it in the Decision Server. The demo covers 5 topics. I've listed them below. It also gives the start time of each topic so that you can fast forward to a particular topic if you desire.
 
